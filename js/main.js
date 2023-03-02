@@ -428,9 +428,8 @@ function create_word(text,size,id,canvas,x=0,y=0){
     word.setAttributeNS(null,'id',id)
     word.setAttributeNS(null,'x',x)
     word.setAttributeNS(null,'y',y)
-    
-    canvas.appendChild(word);
 
+    canvas.appendChild(word);
 }
 
 prueba = "Un poco de historia nunca cae mal Latinoamérica posee una gama extensa de sonidos,\
@@ -460,11 +459,96 @@ prueba = "Un poco de historia nunca cae mal Latinoamérica posee una gama extens
             florecería en esta década";
 
 
-cloud_words = top_10(prueba,"español");
 
 
 
 
+function ascending(list){
+    keys = Object.keys(list).sort(function(a,b){return list[a]-list[b]})
+
+    const result = Object.create(null);
+            keys.forEach(word => {
+                result[word] = list[word]
+    });
+    return result
+}
+
+
+function create_cloud(word_cloud){
+    var canvas = document.getElementById("canvas")
+    var last_word;
+    let new_Height = 0; 
+    let current_height = 0;
+
+
+    for (let key in word_cloud) {
+        create_word(key,word_cloud[key]*10,key,canvas)
+    }
+
+    
+    word_cloud= ascending(word_cloud)
+
+    for (let key in word_cloud) {
+        word = canvas.getElementById(key);
+        var bbox = word.getBoundingClientRect()
+        if (last_word != null){
+            var l_bbox = last_word.getBoundingClientRect();
+            last_x = l_bbox.right
+            last_y = l_bbox.left
+
+            
+            current_x = l_bbox.right + bbox.width;
+            if (current_x >= 900){
+                current_height = new_Height
+                word.setAttributeNS(null,'transform','translate('+ 0 + ',' + current_height +')')
+        
+            } else {
+            word.setAttributeNS(null,'transform','translate('+ last_x + ',' + current_height +')')
+            }
+        }
+        
+
+        //Es necesario volver a calcular las coordenas
+        bbox = word.getBoundingClientRect()
+        if (bbox.bottom > new_Height) {
+            new_Height = bbox.bottom 
+        }
+
+
+        last_word = canvas.getElementById(key);
+        
+    }
+
+    
+}
+
+
+word_cloud = top_10(prueba,"español");
+create_cloud(word_cloud);
+
+function ascending(list){
+    keys = Object.keys(list).sort(function(a,b){return list[a]-list[b]})
+
+    const result = Object.create(null);
+            keys.forEach(word => {
+                result[word] = list[word]
+    });
+    return result
+}
+
+//word_cloud= ascending(word_cloud)
+
+for (let key in word_cloud) {
+console.log(key,word_cloud[key] )
+}
+
+
+
+
+
+
+
+/*
 var canvas = document.getElementById("canvas")
 var last_word;
 let indice= 0;
@@ -483,16 +567,15 @@ for (let key in cloud_words) {
 
     create_word(key,cloud_words[key]*10,key,canvas,x=last_x,y=salto)
     var word = canvas.getElementById(key);
+    console.log(cloud_words[key]*10)
 
     var bbox = word.getBoundingClientRect()
     current_x = bbox.right
     if (current_x > 900 ){
-        console.log(word.getBoundingClientRect())
         word.setAttributeNS(null,'transform','translate('+ -last_x + ',' + max_y  +')')
         salto += max_y
 
     }
-    console.log(salto)
     
     
     if (indice == 0){
@@ -508,10 +591,12 @@ for (let key in cloud_words) {
        let current_y  = max_y- (bbox.height + bbox.y);
        word.setAttributeNS(null,'transform','translate(0,'+ current_y  +')')
     }
-    */
+    
+    
     last_word = canvas.getElementById(key);
     indice = 1 + indice;
   }
+*/
 
 
 
