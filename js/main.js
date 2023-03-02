@@ -403,7 +403,7 @@ function top_10(texto,idioma,remover=true){
     const top_palabras = eliminar_stopwords(palabras_ordenas,idioma,remover);
     
     //En javascript podemos establecer la longitud de un objeto asignando un valor a su atributo length (No estoy seguro si es una buena practica pero funciona)
-    top_palabras.length  = 10
+    top_palabras.length  = 50
     
     
     /*En el paso de ordenamiento se obtuvo las palabras ordenas por aparición, sin embargo, se perdio el numero de apariciones de la palabra
@@ -469,25 +469,30 @@ var canvas = document.getElementById("canvas")
 var last_word;
 let indice= 0;
 let max_y = 0;
+let salto = 0;
   
 for (let key in cloud_words) {
     let last_x = 0;
     let last_y = 0;
 
     if (last_word != null){
-        var bbox = last_word.getBBox();
-        last_x = bbox.width + bbox.x
-        last_y = bbox.height + bbox.y
+        var bbox = last_word.getBoundingClientRect();
+        last_x = bbox.right
+        last_y = bbox.left
     }
 
-    create_word(key,cloud_words[key]*10,key,canvas,x=last_x)
+    create_word(key,cloud_words[key]*10,key,canvas,x=last_x,y=salto)
     var word = canvas.getElementById(key);
 
-    var bbox = word.getBBox();
-    current_x = bbox.width + bbox.x
-    if (current_x > 900){
-        word.setAttributeNS(null,'transform','translate('+ -bbox.x + ',' + max_y  +')')
+    var bbox = word.getBoundingClientRect()
+    current_x = bbox.right
+    if (current_x > 900 ){
+        console.log(word.getBoundingClientRect())
+        word.setAttributeNS(null,'transform','translate('+ -last_x + ',' + max_y  +')')
+        salto += max_y
+
     }
+    console.log(salto)
     
     
     if (indice == 0){
